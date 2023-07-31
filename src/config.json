@@ -1,6 +1,6 @@
 {
   "Region": "us-east-2",
   "QueueUrl": "https://sqs.us-east-2.amazonaws.com/380955945980/EzOutStore-default",
-  "AccessKey": "EnterAccessKey",
-  "SecretAccessKey": "EnterSecretAccessKey"
+  "AccessKey": "AKIAVRMV6NP6NCLKSVR2",
+  "SecretAccessKey": "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"
 }

@@ -7,7 +7,9 @@ import { useState, useEffect } from "react";
 const MARGIN = { top: 60, right: 60, bottom: 60, left: 60 };
 
 export const Scatterplot = ({ width, height, data }) => {
-  useEffect(() => {console.log("Scatter effect", data)}, [data]);
+  useEffect(() => {
+    console.log("Scatter effect", data);
+  }, [data]);
 
   const [hovered, setHovered] = useState(null);
   // Layout. The div size is set by the given props.
@@ -16,57 +18,18 @@ export const Scatterplot = ({ width, height, data }) => {
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
 
   // Scales
-  const yScale = d3
-    .scaleLinear()
-    .domain([-73.8, -73.82])
-    .range([boundsHeight, 0]);
   const xScale = d3
     .scaleLinear()
-    .domain([41.03, 41.04])
-    .range([0, boundsWidth]);
+    .domain([-73.8, -73.82])
+    .range([boundsWidth, 0]);
+  const yScale = d3
+    .scaleLinear()
+    .domain([41.03, 41.06])
+    .range([0, boundsHeight]);
 
   //console.log("data", data);
 
   // Build the shapes
-
-  const allShapes = data.map((d, i) => {
-    var color = "#000000";
-    if (d.product === "Toto") {
-      color = "#FF0000";
-    }
-    if (d.product === "Tata") {
-      color = "#00FF00";
-    }
-    if (d.product === "Titi") {
-      color = "#0000FF";
-    }
-
-    if (data.length > 0 && d.x != null && d.y != null) {
-      return (
-        <circle
-          key={i}
-          r={13}
-          cx={xScale(d.x)}
-          cy={yScale(d.y)}
-          opacity={1}
-          stroke={color}
-          fill={color}
-          fillOpacity={0.2}
-          strokeWidth={1}
-          onMouseEnter={() =>
-            setHovered({
-              xPos: xScale(d.x) + 200,
-              yPos: yScale(d.y) + 200,
-              name: d.product,
-              xdesc: d.x,
-              ydesc: d.y,
-            })
-          }
-          onMouseLeave={() => setHovered(null)}
-        />
-      );
-    }
-  });
 
   return (
     <div>
@@ -90,16 +53,75 @@ export const Scatterplot = ({ width, height, data }) => {
           </g>
 
           {/* Circles */}
-          {allShapes}
+          {/*allShapes*/}
 
           <rect
-            width="25"
-            height="25"
-            x={xScale(20)}
-            y={yScale(20)}
-            stroke="blue"
-            fill="cyan"
-          ></rect>
+            x={xScale(-73.81)}
+            y={yScale(41.035)}
+            width="100"
+            height="100"
+            rx="15"
+            opacity={1}
+            stroke="#000000"
+            fill={
+              data.dTotalGroceries > data.dTotalOthers ? "#00FF00" : "#FF0000"
+            }
+            fillOpacity={0.2}
+            strokeWidth={1}
+            onMouseEnter={() =>
+              setHovered({
+                xPos: xScale(-73.81) + 200,
+                yPos: yScale(41.035) + 200,
+                name: "Groceries",
+                number: data.dTotalGroceries,
+              })
+            }
+            onMouseLeave={() => setHovered(null)}
+          />
+
+          <text
+            x={xScale(-73.81)}
+            y={yScale(41.035) + 50} 
+            font-family="Verdana"
+            font-size="15"
+            fill="black"
+          >
+            Groceries
+          </text>
+
+          <rect
+            x={xScale(-73.819)}
+            y={yScale(41.032)}
+            width="100"
+            height="100"
+            rx="15"
+            opacity={1}
+            stroke="#000000"
+            fill={
+              data.dTotalGroceries < data.dTotalOthers ? "#00FF00" : "#FF0000"
+            }
+            fillOpacity={0.2}
+            strokeWidth={1}
+            onMouseEnter={() =>
+              setHovered({
+                xPos: xScale(-73.819) + 200,
+                yPos: yScale(41.032) + 200,
+                name: "Other food",
+                number: data.dTotalOthers,
+              })
+            }
+            onMouseLeave={() => setHovered(null)}
+          />
+
+          <text
+            x={xScale(-73.819)}
+            y={yScale(41.032) + 50} 
+            font-family="Verdana"
+            font-size="15"
+            fill="black"
+          >
+            Other food
+          </text>
         </g>
       </svg>
 
@@ -114,7 +136,8 @@ export const Scatterplot = ({ width, height, data }) => {
           marginLeft: MARGIN.left,
           marginTop: MARGIN.top,
         }}
-      >X
+      >
+        X
         <Tooltip interactionData={hovered} />
       </div>
     </div>

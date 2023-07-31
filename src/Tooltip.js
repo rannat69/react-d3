@@ -15,7 +15,8 @@ export const Tooltip = ({ interactionData }) => {
     >
       {interactionData.name}
       <br />
-      <br />x : {interactionData.xdesc} y : {interactionData.ydesc}
+      <br />
+      Number : {interactionData.number}
     </div>
   );
 };
