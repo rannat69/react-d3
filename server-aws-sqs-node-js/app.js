@@ -12,35 +12,7 @@ aws.config.loadFromPath(__dirname + "/config.json");
 
 // Instantiate SQS.
 var sqs = new aws.SQS();
-/*
-// Creating a queue.
-app.get('/create', function (req, res) {
-    var params = {
-        QueueName: "MyFirstQueue"
-    };
-    
-    sqs.createQueue(params, function(err, data) {
-        if(err) {
-            res.send(err);
-        } 
-        else {
-            res.send(data);
-        } 
-    });
-});
 
-// Listing our queues.
-app.get('/list', function (req, res) {
-    sqs.listQueues(function(err, data) {
-        if(err) {
-            res.send(err);
-        } 
-        else {
-            res.send(data);
-        } 
-    });
-});
-*/
 // Sending a message.
 // NOTE: Here we need to populate the queue url you want to send to.
 // That variable is indicated at the top of app.js.
@@ -70,6 +42,7 @@ app.get("/receive", cors(), function (req, res) {
   var params = {
     QueueUrl: queueUrl,
     VisibilityTimeout: 600, // 10 min wait time for anyone else to process.
+     MaxNumberOfMessages: 10,
   };
 
   sqs.receiveMessage(params, function (err, data) {
@@ -77,7 +50,6 @@ app.get("/receive", cors(), function (req, res) {
       res.send(err);
     } else {
       res.send(data);
-      console.log("test");
     }
   });
 });
@@ -128,12 +100,3 @@ app.use(
 app.listen(8080, () => {
   console.log(`Example app listening on port 8080`);
 });
-
-/*console.log(app);
-var server = app.listen(80, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log('AWS SQS example app listening at http://%s:%s', host, port);
-});
-**/

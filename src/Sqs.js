@@ -1,38 +1,41 @@
 import React, { useState, useEffect } from "react";
 import Scatterplot from "./Scatter";
-import { SQSClient } from "@aws-sdk/client-sqs";
-import { Consumer } from "sqs-consumer";
-import configData from "./config.json";
+
+import breakfast from "./products/breakfast.js";
+import groceries from "./products/groceries.js";
+import snacks from "./products/snacks.js";
 
 var total = 0;
 var totalGroceries = 0;
-var totalOthers = 0;
+var totalSnacks = 0;
+var totalBreakfast = 0;
 function Sqs() {
   var dataSqs = {
     dTotalGroceries: 0,
-    dTotalOthers: 0,
     dTotal: 0,
+    dTotalBreakfast: 0,
+    dTotalSnacks: 0,
   };
 
   const [reload, setReload] = useState(false);
 
-  /*const [totalGroceries, setTotalGroceries] = useState(0);
-  const [totalOthers, setTotalOthers] = useState(0);
-  const [total, setTotal] = useState(0);*/
-  var i = 0;
-  function addCategory(category) {
-
-    if (category === "Groceries") {
-      //  setTotalGroceries(totalGroceries + 1);
-      totalGroceries++;
-      //  setTotal(total + 1);
-      total++;
-    } else if (category === "Other food") {
-      // setTotalOthers(totalOthers + 1);
-      totalOthers++;
-      // setTotal(total + 1);
+  function addCategory(product) {
+    // Check if prpoduct is in breakfast, snacks, or groceries
+    if (breakfast.indexOf(product) > -1) {
+      totalBreakfast++;
       total++;
     }
+
+    if (groceries.indexOf(product) > -1) {
+      totalGroceries++;
+      total++;
+    }
+
+    if (snacks.indexOf(product) > -1) {
+      totalSnacks++;
+      total++;
+    }
+
     setReload(true);
   }
 
@@ -49,17 +52,13 @@ function Sqs() {
 
     if (typeof data.Messages !== "undefined") {
       data.Messages.map((message) => {
-
         if (message.Body) {
           const body = JSON.parse(message.Body);
-          console.log("la categorie", body.data.category);
+          console.log("le product", body.data.category);
           addCategory(body.data.category);
         }
       });
     }
-
-    i++;
-    console.log(i);
   }
 
   useEffect(function appRunTimer() {
@@ -107,7 +106,8 @@ function Sqs() {
   */
 
   dataSqs.dTotalGroceries = totalGroceries;
-  dataSqs.dTotalOthers = totalOthers;
+  dataSqs.dTotalSnacks = totalSnacks;
+  dataSqs.dTotalBreakfast = totalBreakfast;
   dataSqs.dTotal = total;
   return (
     <>
@@ -119,7 +119,7 @@ function Sqs() {
         <br />
       </div>
 
-      <Scatterplot data={dataSqs} width={400} height={400} />
+      <Scatterplot data={dataSqs} width={700} height={400} />
     </>
   );
 }
